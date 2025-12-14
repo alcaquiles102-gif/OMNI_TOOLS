@@ -23,8 +23,18 @@ class ADBClient:
     def shell(self, cmd: str) -> str:
         return self._run(["shell", cmd])
 
-    def devices(self) -> str:
-        return self._run(["devices"])
+    def devices(self):
+        output = self._run(["devices"])
+        lines = output.splitlines()[1:]  # saltar encabezado
+
+        devices = []
+        for line in lines:
+            if not line.strip():
+                continue
+        serial, status = line.split()
+        devices.append((serial, status))
+
+        return devices
 
     def install(self, apk_path: str):
         return self._run(["install", apk_path])
